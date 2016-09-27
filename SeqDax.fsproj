@@ -37,25 +37,6 @@
     <DocumentationFile>bin\Release\SeqDax.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Utils.fs" />
-    <Compile Include="Axapta.fs" />
-    <Compile Include="Debug.fs" />
-    <Compile Include="Diagram.fs" />
-    <Compile Include="Sort.fs" />
-    <Compile Include="Svg.fs" />
-    <Compile Include="Render.fs" />
-    <Compile Include="Program.fs" />
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -72,6 +53,28 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
+  <ItemGroup>
+    <Compile Include="Utils.fs" />
+    <Compile Include="Axapta.fs" />
+    <Compile Include="Debug.fs" />
+    <Compile Include="Diagram.fs" />
+    <Compile Include="Sort.fs" />
+    <Compile Include="Svg.fs" />
+    <Compile Include="Render.fs" />
+    <Compile Include="Program.fs" />
+    <Content Include="sample.txt" />
+    <None Include="fableme.cmd" />
+    <None Include="sample.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
