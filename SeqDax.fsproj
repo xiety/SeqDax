@@ -54,17 +54,14 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="Utils.fs" />
-    <Compile Include="Axapta.fs" />
-    <Compile Include="Debug.fs" />
-    <Compile Include="Diagram.fs" />
-    <Compile Include="Sort.fs" />
-    <Compile Include="Svg.fs" />
-    <Compile Include="Render.fs" />
-    <Compile Include="Program.fs" />
-    <Content Include="sample.txt" />
-    <None Include="fableme.cmd" />
-    <None Include="sample.svg" />
+    <Compile Include="src\Utils.fs" />
+    <Compile Include="src\Axapta.fs" />
+    <Compile Include="src\Debug.fs" />
+    <Compile Include="src\Diagram.fs" />
+    <Compile Include="src\Sort.fs" />
+    <Compile Include="src\Svg.fs" />
+    <Compile Include="src\Render.fs" />
+    <Compile Include="src\Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
