@@ -10,9 +10,21 @@
         var program = require('Program');
         document.getElementById('output').innerHTML = program.convert(document.getElementById('input').value);
       }
+      
+      function sample() {
+          var client = new XMLHttpRequest();
+          client.open('GET', 'sample.txt');
+          client.onreadystatechange = function() {
+              var input = document.getElementById('input')
+              input.value = client.responseText;
+              input.oninput();
+          }
+          client.send();
+      }
     </script>
   </head>
   <body>
+  	<input type="button" value="Sample" onclick="javascript: sample()"></input>
   	<textarea name="input" id="input" cols="65" rows="15" style="width:100%; height:15em" oninput="javascript: convert()"></textarea>
   	<div id="output"></div>
   </body>

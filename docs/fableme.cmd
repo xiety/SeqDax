@@ -1,1 +1,1 @@
-fable --projFile ..\SeqDax.fsproj --module amd -o js --symbols FABLE
+fable --projFile ..\src\SeqDax.fsproj --module amd -o ..\docs --symbols FABLE
