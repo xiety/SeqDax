@@ -23,14 +23,14 @@ let public convert input =
 #if !FABLE
 [<EntryPoint>]
 let main _ = 
-    let input = System.IO.File.ReadAllText("..\..\sample.txt")
+    let input = System.IO.File.ReadAllText("..\..\docs\sample.txt")
     let input = input.Replace("\r\n", "\n")
 
     let output = convert input
 
     printfn "%A" output
 
-    System.IO.File.WriteAllText("..\..\sample.svg", output)
+    System.IO.File.WriteAllText("..\..\docs\sample.svg", output)
 
     0 // return an integer exit code
 #endif
