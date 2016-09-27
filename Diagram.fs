@@ -13,15 +13,15 @@ type private VisualCallstackItem = { Activation: VisualActivation; CallstackItem
 type private Options = { Height: int; Stack: VisualCallstackItem list; Item: CallstackItem; From: VisualConnection option; IsSelfCall: bool }
 
 [<Literal>]
-let SelfCallSize = 1
+let private SelfCallSize = 1
 
-let rec lifeLineForActivation (activation: VisualActivation) =
+let rec public lifeLineForActivation (activation: VisualActivation) =
     match activation.From.Object with
     | LifeLine lifeLine     -> lifeLine
     | Activation activation -> lifeLineForActivation activation
     | Message _             -> failwith "error"
 
-let lifeLineForConnection con =
+let public lifeLineForConnection con =
     match con.Object with
     | LifeLine lifeLine     -> lifeLine
     | Activation activation -> lifeLineForActivation activation

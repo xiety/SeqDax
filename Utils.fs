@@ -18,6 +18,9 @@ let log t a =
     printfn t
     a
 
+let splitStr (sep: string) (str: string) =
+    str.Split([|sep|], System.StringSplitOptions.None)
+
 let splitBy f list =
     let rec markBy list' gr =
         seq {

@@ -7,12 +7,10 @@ let RootObjectName = "User"
 
 type CallstackItem = { ObjectName: string; MethodName: string; Line: int; Children: CallstackItem list }
 
-let reverse (root: AxCallstackItem) (ax: AxCallstackItem list list) =
+let private reverse (root: AxCallstackItem) (ax: AxCallstackItem list list) =
     let mapLine a =
         //first root will be eliminated by pairwise
-        let tmp = root::root::(List.rev a)
-
-        tmp
+        root::root::(List.rev a)
         |> List.pairwise
 #if FABLE
         |> List.skip 1 //TODO: remove when pairwise fixed ISSUE#437
@@ -21,7 +19,7 @@ let reverse (root: AxCallstackItem) (ax: AxCallstackItem list list) =
 
     ax |> List.map mapLine
 
-let nextLayer curstack (ax: AxCallstackItem list list) = 
+let private nextLayer curstack (ax: AxCallstackItem list list) = 
     let curlen = List.length curstack
 
     ax
@@ -31,7 +29,7 @@ let nextLayer curstack (ax: AxCallstackItem list list) =
     |> List.distinct
     |> List.sortBy (fun a -> (List.last a).Line)
 
-let rec convert (curstack: AxCallstackItem list) (curitem: AxCallstackItem) level (ax: AxCallstackItem list list) =
+let rec private convert (curstack: AxCallstackItem list) (curitem: AxCallstackItem) level (ax: AxCallstackItem list list) =
     let children = ax
                    |> nextLayer curstack
                    |> List.map (fun a -> convert a (List.last a) (level + 1) ax)

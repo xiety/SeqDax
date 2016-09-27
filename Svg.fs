@@ -15,7 +15,7 @@ let rec private svgToList input output =
     | h::t -> svgToList t (make h :: output)
     | [] -> output
 
-let rec getSize input maxx maxy =
+let rec private getSize input maxx maxy =
     match input with
     | h::t -> let (dx,dy) = match h with
                             | Rect(x, y, width, height, _, _) -> (x + width, y + height)

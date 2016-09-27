@@ -3,21 +3,21 @@
 open Diagram
 
 [<Literal>]
-let StepSize = 12.0f
+let private StepSize = 12.0f
 [<Literal>]
-let ActivationWidth = 12.0f
+let private ActivationWidth = 12.0f
 [<Literal>]
-let LifelineStep = 120.0f
+let private LifelineStep = 120.0f
 [<Literal>]
-let LifeHeaderWidth = 85.0f
+let private LifeHeaderWidth = 85.0f
 [<Literal>]
-let LifeHeaderHeight = 30.0f
+let private LifeHeaderHeight = 30.0f
 [<Literal>]
-let TextMargin = 4.0f
+let private TextMargin = 4.0f
 
-type Position = { X: float32; Y: float32 }
+type private Position = { X: float32; Y: float32 }
 
-type RenderState = { List: Svg.Element list; LifeLineX: float32; LifeLineCount: int; Map: Map<VisualElement, Position> }
+type private RenderState = { List: Svg.Element list; LifeLineX: float32; LifeLineCount: int; Map: Map<VisualElement, Position> }
 
 let private renderLifeLine (lifeLine: VisualLifeLine) state =
     let x = LifeHeaderWidth / 2.0f + state.LifeLineX + 1.0f
@@ -60,7 +60,7 @@ let private renderActivation (activation: VisualActivation) state =
                                              List = Svg.Rect(x, y, width, height, activation.Name, "activity") :: state.List }
     | Message _ -> state
 
-let arrow x1 y1 x2 y2 cls = 
+let private arrow x1 y1 x2 y2 cls = 
     let line1 = Svg.Line(x1, y1, x2, y2, cls)
 
     if x1 < x2 then

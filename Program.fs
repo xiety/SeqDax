@@ -5,19 +5,20 @@ open Render
 open Sort
 open Svg
 
-let convert input =
-    input |> log "parseAxCallstack"
-          |> parseAxCallstack
-          |> log "convertAxCallstack"
-          |> convertAxCallstack
-          |> log "drawDiagram"
-          |> drawDiagram
-          |> log "sortDiagram"
-          |> sortDiagram
-          |> log "renderSvg"
-          |> renderSvg
-          |> log "svgToText"
-          |> svgToText
+let public convert input =
+    input
+    |> log "parseAxCallstack"
+    |> parseAxCallstack
+    |> log "convertAxCallstack"
+    |> convertAxCallstack
+    |> log "drawDiagram"
+    |> drawDiagram
+    |> log "sortDiagram"
+    |> sortDiagram
+    |> log "renderSvg"
+    |> renderSvg
+    |> log "svgToText"
+    |> svgToText
 
 #if !FABLE
 [<EntryPoint>]

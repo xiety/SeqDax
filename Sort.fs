@@ -2,7 +2,7 @@
 
 open Diagram
 
-let calculate diagram (lifeLine: VisualLifeLine) =
+let private calculate diagram (lifeLine: VisualLifeLine) =
     let rec calculate' list size num = 
         match list with
         | h::t -> match h with
