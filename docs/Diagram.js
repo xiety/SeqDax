@@ -336,35 +336,24 @@ define(["exports", "fable-core"], function (exports, _fableCore) {
     }
   }
 
-  function recurseCalc(drawCalc, depth, list, options, reclist) {
-    return reclist.tail != null ? function () {
-      var isSelfCall = reclist.head.ObjectName === options.Item.ObjectName;
-      var newheight = drawCalc(depth + 1)(list)(new Options(options.Height, options.Stack, reclist.head, options.From, isSelfCall)) + 1;
-      return recurseCalc(drawCalc, depth, list, new Options(newheight, options.Stack, options.Item, options.From, options.IsSelfCall), reclist.tail);
-    }() : options.Height;
-  }
-
   function drawCalc(depth, list, options) {
     var currentHeight = options.IsSelfCall ? options.Height + 1 : options.Height;
-    return recurseCalc(function (depth_1) {
+
+    var recurseCalc = function recurseCalc(depth_1) {
       return function (list_1) {
         return function (options_1) {
-          return drawCalc(depth_1, list_1, options_1);
+          return function (reclist) {
+            return reclist.tail != null ? function () {
+              var isSelfCall = reclist.head.ObjectName === options_1.Item.ObjectName;
+              var newheight = drawCalc(depth_1 + 1, list_1, new Options(options_1.Height, options_1.Stack, reclist.head, options_1.From, isSelfCall)) + 1;
+              return recurseCalc(depth_1)(list_1)(new Options(newheight, options_1.Stack, options_1.Item, options_1.From, options_1.IsSelfCall))(reclist.tail);
+            }() : options_1.Height;
+          };
         };
       };
-    }, depth, list, new Options(currentHeight + 1, options.Stack, options.Item, options.From, options.IsSelfCall), options.Item.Children);
-  }
+    };
 
-  function recurse(draw, list, position, activation, options, reclist) {
-    return reclist.tail != null ? function () {
-      var isSelfCall = reclist.head.ObjectName === options.Item.ObjectName;
-      var point = new VisualConnection(new VisualElement("Activation", [activation]), position);
-      var patternInput = draw(list)(function () {
-        var From = point;
-        return new Options(options.Height, options.Stack, reclist.head, From, isSelfCall);
-      }());
-      return recurse(draw, patternInput[1], position + patternInput[0] - options.Height + 1, activation, new Options(patternInput[0] + 1, options.Stack, options.Item, options.From, options.IsSelfCall), reclist.tail);
-    }() : [options.Height, list];
+    return recurseCalc(depth)(list)(new Options(currentHeight + 1, options.Stack, options.Item, options.From, options.IsSelfCall))(options.Item.Children);
   }
 
   function draw(list, options) {
@@ -379,11 +368,27 @@ define(["exports", "fable-core"], function (exports, _fableCore) {
 
     var stack = _fableCore.List.append(options.Stack, _fableCore.List.ofArray([new VisualCallstackItem(patternInput[0], options.Item, height)]));
 
-    return recurse(function (list_1) {
-      return function (options_1) {
-        return draw(list_1, options_1);
+    var recurse = function recurse(list_1) {
+      return function (position) {
+        return function (activation) {
+          return function (options_1) {
+            return function (reclist) {
+              return reclist.tail != null ? function () {
+                var isSelfCall = reclist.head.ObjectName === options_1.Item.ObjectName;
+                var point = new VisualConnection(new VisualElement("Activation", [activation]), position);
+                var patternInput_1 = draw(list_1, function () {
+                  var From = point;
+                  return new Options(options_1.Height, options_1.Stack, reclist.head, From, isSelfCall);
+                }());
+                return recurse(patternInput_1[1])(position + patternInput_1[0] - options_1.Height + 1)(activation)(new Options(patternInput_1[0] + 1, options_1.Stack, options_1.Item, options_1.From, options_1.IsSelfCall))(reclist.tail);
+              }() : [options_1.Height, list_1];
+            };
+          };
+        };
       };
-    }, patternInput[1], 1, patternInput[0], new Options(height + 1, stack, options.Item, null, false), options.Item.Children);
+    };
+
+    return recurse(patternInput[1])(1)(patternInput[0])(new Options(height + 1, stack, options.Item, null, false))(options.Item.Children);
   }
 
   function drawDiagram(callstack) {

@@ -82,30 +82,32 @@ let private activationWithMessage drawCalc list options =
                     (activation, message :: list)
     | _          -> (activation, list)
 
-let rec private recurseCalc drawCalc depth list options reclist =
-    match reclist with
-    | h::t -> let isSelfCall = (h.ObjectName = options.Item.ObjectName)
-              let newheight = (drawCalc (depth + 1) list { options with Item = h; IsSelfCall = isSelfCall}) + 1;
-              recurseCalc drawCalc depth list { options with Height = newheight } t
-    | _    -> options.Height
-
 let rec private drawCalc depth list options =
     let currentHeight = if options.IsSelfCall then options.Height + SelfCallSize else options.Height
-    recurseCalc drawCalc depth list { options with Height = currentHeight + 1 } options.Item.Children
 
-let rec private recurse draw list position activation options reclist =
-    match reclist with
-    | h::t -> let isSelfCall = (h.ObjectName = options.Item.ObjectName)
-              let point = { Object = Activation activation; Position = position };
-              let (newheight, list) = draw list { options with Item = h; From = Some point; IsSelfCall = isSelfCall };
-              recurse draw list (position + newheight - options.Height + 1) activation { options with Height = (newheight + 1) } t
-    | _    -> (options.Height, list)
+    let rec recurseCalc depth list options reclist =
+        match reclist with
+        | h::t -> let isSelfCall = (h.ObjectName = options.Item.ObjectName)
+                  let newheight = (drawCalc (depth + 1) list { options with Item = h; IsSelfCall = isSelfCall}) + 1;
+                  recurseCalc depth list { options with Height = newheight } t
+        | _    -> options.Height
+
+    recurseCalc depth list { options with Height = currentHeight + 1 } options.Item.Children
 
 let rec private draw list options =
     let (activation, list) = activationWithMessage drawCalc list options
     let height = if options.IsSelfCall then options.Height + SelfCallSize else options.Height
     let stack = options.Stack @ [{ Activation = activation; CallstackItem = options.Item; Height = height }]
-    recurse draw list 1 activation { Height = (height + 1); Stack = stack; Item = options.Item; From = None; IsSelfCall = false } options.Item.Children
+
+    let rec recurse list position activation options reclist =
+        match reclist with
+        | h::t -> let isSelfCall = (h.ObjectName = options.Item.ObjectName)
+                  let point = { Object = Activation activation; Position = position };
+                  let (newheight, list) = draw list { options with Item = h; From = Some point; IsSelfCall = isSelfCall };
+                  recurse list (position + newheight - options.Height + 1) activation { options with Height = (newheight + 1) } t
+        | _    -> (options.Height, list)
+
+    recurse list 1 activation { Height = (height + 1); Stack = stack; Item = options.Item; From = None; IsSelfCall = false } options.Item.Children
 
 let drawDiagram callstack =
     let (_, list) = draw [] { Options.Height = 1; Stack = []; Item = callstack; From = None; IsSelfCall = false }
