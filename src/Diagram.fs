@@ -35,7 +35,7 @@ let private createActivation fromObject fromPosition toObject toPosition name =
 let rec private getDepth item itemName =
     let children = item.Children |> List.map (fun a -> getDepth a itemName)
     let max = if List.isEmpty children then 0 else List.max children
-    
+
     if item.ObjectName = itemName then max + 1
     else max
 
@@ -80,13 +80,13 @@ let private activationWithMessage drawCalc list options =
                                             Line = options.Item.Line
                                             Depth = List.length options.Stack }
                     (activation, message :: list)
-    | _          -> (activation, list)    
+    | _          -> (activation, list)
 
 let rec private recurseCalc drawCalc depth list options reclist =
     match reclist with
     | h::t -> let isSelfCall = (h.ObjectName = options.Item.ObjectName)
               let newheight = (drawCalc (depth + 1) list { options with Item = h; IsSelfCall = isSelfCall}) + 1;
-              recurseCalc drawCalc depth list { options with Height = newheight } t 
+              recurseCalc drawCalc depth list { options with Height = newheight } t
     | _    -> options.Height
 
 let rec private drawCalc depth list options =

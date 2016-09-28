@@ -25,7 +25,7 @@ let private createItem (path: string) linestr =
     { ObjectName = objectName; MethodName = methodName; Line = line }
 
 let private parse items =
-    let regex s = 
+    let regex s =
         match s with
         | Regex @"^\[[sc]\]\s+(.*?)\s+(\d+)$" a -> Some(createItem (a.Groups.Item(1).Value) (a.Groups.Item(2).Value))
         | _ -> None

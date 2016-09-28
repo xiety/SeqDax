@@ -3,7 +3,7 @@
 open Diagram
 
 let private calculate diagram (lifeLine: VisualLifeLine) =
-    let rec calculate' list size num = 
+    let rec calculate' list size num =
         match list with
         | h::t -> match h with
                   | Message m    -> let outbound = if (lifeLineForConnection m.From).Text = lifeLine.Text then 1 else 0

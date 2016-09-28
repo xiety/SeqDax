@@ -19,7 +19,7 @@ let private reverse (root: AxCallstackItem) ax =
 
     ax |> List.map mapLine
 
-let private nextLayer curstack (ax: AxCallstackItem list list) = 
+let private nextLayer curstack (ax: AxCallstackItem list list) =
     let curlen = List.length curstack
 
     ax

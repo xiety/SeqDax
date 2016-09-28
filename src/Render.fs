@@ -23,9 +23,9 @@ let private renderLifeLine (lifeLine: VisualLifeLine) state =
     let x = LifeHeaderWidth / 2.0f + state.LifeLineX + 1.0f
     let line = Svg.Line(x - LifeHeaderWidth / 2.0f, LifeHeaderHeight, x + LifeHeaderWidth / 2.0f, LifeHeaderHeight, "header")
     let state = { state with List = line :: state.List }
-    
+
     let text = Svg.Text(x, LifeHeaderHeight / 2.0f + (if (state.LifeLineCount % 2) = 0 then 5.0f else -5.0f), lifeLine.Text, "header")
-    
+
     let state = { state with List = text :: state.List }
 
     let y1 = LifeHeaderHeight
@@ -60,7 +60,7 @@ let private renderActivation (activation: VisualActivation) state =
                                              List = Svg.Rect(x, y, width, height, activation.Name, "activity") :: state.List }
     | Message _ -> state
 
-let private arrow x1 y1 x2 y2 cls = 
+let private arrow x1 y1 x2 y2 cls =
     let line1 = Svg.Line(x1, y1, x2, y2, cls)
 
     if x1 < x2 then
