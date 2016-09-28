@@ -273,7 +273,7 @@ define(["exports", "fable-core"], function (exports, _fableCore) {
     return new VisualLifeLine(item.ObjectName, size_1, depth);
   }
 
-  function makeActivation(list, activationSize, options) {
+  function makeActivation(activationSize, options, list) {
     return options.IsSelfCall ? options.From == null ? function () {
       throw "No 'from' for self call";
     }() : function () {
@@ -318,12 +318,30 @@ define(["exports", "fable-core"], function (exports, _fableCore) {
     }();
   }
 
-  function activationWithMessage(drawCalc, list, options) {
-    var activationSize = drawCalc(0)(list)(function () {
+  function drawCalc(depth, options, list) {
+    var currentHeight = options.IsSelfCall ? options.Height + 1 : options.Height;
+
+    var recurseCalc = function recurseCalc(options_1) {
+      return function (list_1) {
+        return function (reclist) {
+          return reclist.tail != null ? function () {
+            var isSelfCall = reclist.head.ObjectName === options_1.Item.ObjectName;
+            var newheight = drawCalc(depth + 1, new Options(options_1.Height, options_1.Stack, reclist.head, options_1.From, isSelfCall), list_1);
+            return recurseCalc(new Options(newheight + 1, options_1.Stack, options_1.Item, options_1.From, options_1.IsSelfCall))(list_1)(reclist.tail);
+          }() : options_1.Height;
+        };
+      };
+    };
+
+    return recurseCalc(new Options(currentHeight + 1, options.Stack, options.Item, options.From, options.IsSelfCall))(list)(options.Item.Children);
+  }
+
+  function activationWithMessage(options, list) {
+    var activationHeight = drawCalc(0, function () {
       var IsSelfCall = false;
       return new Options(options.Height, options.Stack, options.Item, options.From, IsSelfCall);
-    }()) - options.Height;
-    var patternInput = makeActivation(list, activationSize, options);
+    }(), list);
+    var patternInput = makeActivation(activationHeight - options.Height, options, list);
 
     if (options.From != null) {
       var message = new VisualElement("Message", [function () {
@@ -336,63 +354,35 @@ define(["exports", "fable-core"], function (exports, _fableCore) {
     }
   }
 
-  function drawCalc(depth, list, options) {
-    var currentHeight = options.IsSelfCall ? options.Height + 1 : options.Height;
-
-    var recurseCalc = function recurseCalc(depth_1) {
-      return function (list_1) {
-        return function (options_1) {
-          return function (reclist) {
-            return reclist.tail != null ? function () {
-              var isSelfCall = reclist.head.ObjectName === options_1.Item.ObjectName;
-              var newheight = drawCalc(depth_1 + 1, list_1, new Options(options_1.Height, options_1.Stack, reclist.head, options_1.From, isSelfCall)) + 1;
-              return recurseCalc(depth_1)(list_1)(new Options(newheight, options_1.Stack, options_1.Item, options_1.From, options_1.IsSelfCall))(reclist.tail);
-            }() : options_1.Height;
-          };
-        };
-      };
-    };
-
-    return recurseCalc(depth)(list)(new Options(currentHeight + 1, options.Stack, options.Item, options.From, options.IsSelfCall))(options.Item.Children);
-  }
-
-  function draw(list, options) {
-    var patternInput = activationWithMessage(function (depth) {
-      return function (list_1) {
-        return function (options_1) {
-          return drawCalc(depth, list_1, options_1);
-        };
-      };
-    }, list, options);
+  function draw(options, list) {
+    var patternInput = activationWithMessage(options, list);
     var height = options.IsSelfCall ? options.Height + 1 : options.Height;
 
     var stack = _fableCore.List.append(options.Stack, _fableCore.List.ofArray([new VisualCallstackItem(patternInput[0], options.Item, height)]));
 
-    var recurse = function recurse(list_1) {
-      return function (position) {
-        return function (activation) {
-          return function (options_1) {
-            return function (reclist) {
-              return reclist.tail != null ? function () {
-                var isSelfCall = reclist.head.ObjectName === options_1.Item.ObjectName;
-                var point = new VisualConnection(new VisualElement("Activation", [activation]), position);
-                var patternInput_1 = draw(list_1, function () {
-                  var From = point;
-                  return new Options(options_1.Height, options_1.Stack, reclist.head, From, isSelfCall);
-                }());
-                return recurse(patternInput_1[1])(position + patternInput_1[0] - options_1.Height + 1)(activation)(new Options(patternInput_1[0] + 1, options_1.Stack, options_1.Item, options_1.From, options_1.IsSelfCall))(reclist.tail);
-              }() : [options_1.Height, list_1];
-            };
+    var recurse = function recurse(position) {
+      return function (options_1) {
+        return function (list_1) {
+          return function (reclist) {
+            return reclist.tail != null ? function () {
+              var isSelfCall = reclist.head.ObjectName === options_1.Item.ObjectName;
+              var point = new VisualConnection(new VisualElement("Activation", [patternInput[0]]), position);
+              var patternInput_1 = draw(function () {
+                var From = point;
+                return new Options(options_1.Height, options_1.Stack, reclist.head, From, isSelfCall);
+              }(), list_1);
+              return recurse(position + patternInput_1[0] - options_1.Height + 1)(new Options(patternInput_1[0] + 1, options_1.Stack, options_1.Item, options_1.From, options_1.IsSelfCall))(patternInput_1[1])(reclist.tail);
+            }() : [options_1.Height, list_1];
           };
         };
       };
     };
 
-    return recurse(patternInput[1])(1)(patternInput[0])(new Options(height + 1, stack, options.Item, null, false))(options.Item.Children);
+    return recurse(1)(new Options(height + 1, stack, options.Item, null, false))(patternInput[1])(options.Item.Children);
   }
 
   function drawDiagram(callstack) {
-    var patternInput = draw(new _fableCore.List(), new Options(1, new _fableCore.List(), callstack, null, false));
+    var patternInput = draw(new Options(1, new _fableCore.List(), callstack, null, false), new _fableCore.List());
     return _fableCore.List.reverse(patternInput[1]);
   }
 });

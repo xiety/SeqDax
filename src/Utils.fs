@@ -29,16 +29,14 @@ let splitBy f list =
                                   yield! markBy t (gr + 1)
                              else yield (h, gr)
                                   yield! markBy t gr
-            | [] -> ignore()
-        }
+            | [] -> ignore() }
 
-    let output = markBy list 1
-                 |> List.ofSeq
-                 |> List.groupBy snd
+    markBy list 1
+    |> List.ofSeq
+    |> List.groupBy snd
 #if FABLE
-                 |> List.map (fun a -> (fst a, snd a |> List.rev)) //TODO: Fable group by error ISSUE#440
+    |> List.map (fun a -> (fst a, snd a |> List.rev)) //TODO: Fable group by error ISSUE#440
 #endif
-                 |> List.sortBy fst
-                 |> List.tail
-                 |> List.map (snd >> List.map fst)
-    output
+    |> List.sortBy fst
+    |> List.tail
+    |> List.map (snd >> List.map fst)

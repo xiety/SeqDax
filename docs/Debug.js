@@ -69,9 +69,7 @@ define(["exports", "fable-core", "./Axapta"], function (exports, _fableCore, _Ax
       }, _fableCore.Seq.toList(_fableCore.Seq.skip(1, _fableCore.Seq.toList(_fableCore.Seq.pairwise(_fableCore.List.ofArray([root, root], _fableCore.List.reverse(a)))))));
     };
 
-    return function (list) {
-      return _fableCore.List.map(mapLine, list);
-    }(ax);
+    return _fableCore.List.map(mapLine, ax);
   }
 
   function nextLayer(curstack, ax) {

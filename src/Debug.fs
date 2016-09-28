@@ -17,7 +17,7 @@ let private reverse (root: AxCallstackItem) ax =
 #endif
         |> List.map (fun a -> { (snd a) with Line = (fst a).Line } )
 
-    ax |> List.map mapLine
+    List.map mapLine ax
 
 let private nextLayer curstack (ax: AxCallstackItem list list) =
     let curlen = List.length curstack
