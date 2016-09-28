@@ -72,7 +72,7 @@ let private arrow x1 y1 x2 y2 cls =
         let line3 = Svg.Line(x2, y2, x2 + 5.0f, y2 + 2.0f, cls)
         [line1; line2; line3]
 
-let rec private activationNestingLevel (el: VisualElement) level =
+let rec private activationNestingLevel el level =
     match el with
     | Activation a -> activationNestingLevel a.From.Object (level + 1)
     | _            -> level
@@ -121,7 +121,7 @@ let rec private render input state =
     | [] -> state
 
 let renderSvg input =
-    let state = render input { RenderState.LifeLineX = 0.0f; RenderState.LifeLineCount = 0; RenderState.Map = Map.empty; RenderState.List = [] }
+    let state = render input { LifeLineX = 0.0f; LifeLineCount = 0; Map = Map.empty; List = [] }
 
     let styles = ["rect { fill:#eeeeee; fill-opacity:1; stroke-width:1; stroke:gray }"
                   "rect:hover { fill:#dddddd; }"

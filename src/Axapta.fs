@@ -7,7 +7,7 @@ let Slash = @"\"
 
 type AxCallstackItem = { ObjectName: string; MethodName: string; Line: int }
 
-let private createItem (path: string) (linestr: string) =
+let private createItem (path: string) linestr =
     let line = int(linestr)
 
     let n1 = path.LastIndexOf(Slash)
@@ -32,7 +32,7 @@ let private parse items =
 
     items |> List.choose regex
 
-let parseAxCallstack (text: string) =
+let parseAxCallstack text =
     let comments (a: string) = a.StartsWith("--")
 
     text

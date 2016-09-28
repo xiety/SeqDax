@@ -29,7 +29,7 @@ let private nextLayer curstack (ax: AxCallstackItem list list) =
     |> List.distinct
     |> List.sortBy (fun a -> (List.last a).Line)
 
-let rec private convert (curstack: AxCallstackItem list) (curitem: AxCallstackItem) level (ax: AxCallstackItem list list) =
+let rec private convert curstack curitem level ax =
     let children = ax
                    |> nextLayer curstack
                    |> List.map (fun a -> convert a (List.last a) (level + 1) ax)

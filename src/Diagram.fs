@@ -28,11 +28,11 @@ let public lifeLineForConnection con =
     | Message _             -> failwith "error"
 
 let private createActivation fromObject fromPosition toObject toPosition name =
-    { VisualActivation.From = { VisualConnection.Object = fromObject; Position = fromPosition }
-      VisualActivation.To = { VisualConnection.Object = toObject; Position = toPosition }
-      VisualActivation.Name = name }
+    { Name = name
+      From = { Object = fromObject; Position = fromPosition }
+      To = { Object = toObject; Position = toPosition } }
 
-let rec private getDepth (item: CallstackItem) itemName =
+let rec private getDepth item itemName =
     let children = item.Children |> List.map (fun a -> getDepth a itemName)
     let max = if List.isEmpty children then 0 else List.max children
     
@@ -46,7 +46,7 @@ let private createLifeLine item size stack =
 
     let depth = getDepth item item.ObjectName
 
-    { VisualLifeLine.Text = item.ObjectName; Depth = depth; Size = size }
+    { Text = item.ObjectName; Depth = depth; Size = size }
 
 let private makeActivation list activationSize options =
     if options.IsSelfCall then
@@ -75,7 +75,7 @@ let private activationWithMessage drawCalc list options =
 
     match options.From with
     | Some from' -> let message = Message { From = from'
-                                            To = { VisualConnection.Object = Activation activation; Position = 0 }
+                                            To = { Object = Activation activation; Position = 0 }
                                             Text = options.Item.MethodName
                                             Line = options.Item.Line
                                             Depth = List.length options.Stack }
@@ -96,7 +96,7 @@ let rec private drawCalc depth list options =
 let rec private recurse draw list position activation options reclist =
     match reclist with
     | h::t -> let isSelfCall = (h.ObjectName = options.Item.ObjectName)
-              let point = { VisualConnection.Object = Activation activation; Position = position };
+              let point = { Object = Activation activation; Position = position };
               let (newheight, list) = draw list { options with Item = h; From = Some point; IsSelfCall = isSelfCall };
               recurse draw list (position + newheight - options.Height + 1) activation { options with Height = (newheight + 1) } t
     | _    -> (options.Height, list)
@@ -104,7 +104,7 @@ let rec private recurse draw list position activation options reclist =
 let rec private draw list options =
     let (activation, list) = activationWithMessage drawCalc list options
     let height = if options.IsSelfCall then options.Height + SelfCallSize else options.Height
-    let stack = options.Stack @ [{ VisualCallstackItem.Activation = activation; CallstackItem = options.Item; Height = height }]
+    let stack = options.Stack @ [{ Activation = activation; CallstackItem = options.Item; Height = height }]
     recurse draw list 1 activation { Height = (height + 1); Stack = stack; Item = options.Item; From = None; IsSelfCall = false } options.Item.Children
 
 let drawDiagram callstack =
