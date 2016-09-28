@@ -6,9 +6,17 @@
     <script>
     requirejs(['Program']);
 
+    window.addEventListener('load', function() {
+        var input = document.getElementById('input');
+        input.value = localStorage.getItem('callstack');
+        input.oninput();
+    });
+
     function convert() {
         var program = require('Program');
-        document.getElementById('output').innerHTML = program.convert(document.getElementById('input').value);
+        var text = document.getElementById('input').value;
+        localStorage.setItem("callstack", text);
+        document.getElementById('output').innerHTML = program.convert(text);
     }
 
     function sample() {
