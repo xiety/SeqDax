@@ -4,27 +4,57 @@
     <meta charset="UTF-8"> 
     <script src="require.js"></script>
     <script>
-      requirejs(["Program"]);
+    requirejs(['Program']);
 
-      function convert() {
+    function convert() {
         var program = require('Program');
         document.getElementById('output').innerHTML = program.convert(document.getElementById('input').value);
-      }
-      
-      function sample() {
-          var client = new XMLHttpRequest();
-          client.open('GET', 'sample.txt');
-          client.onreadystatechange = function() {
-              var input = document.getElementById('input')
-              input.value = client.responseText;
-              input.oninput();
-          }
-          client.send();
-      }
+    }
+
+    function sample() {
+	    var client = new XMLHttpRequest();
+        client.open('GET', 'sample.txt');
+        client.onreadystatechange = function() {
+            var input = document.getElementById('input');
+            input.value = client.responseText;
+            input.oninput();
+        }
+        client.send();
+	}
+
+	function saveFile(filename, text, type) {
+        var blob = new Blob([text], { type: type });
+        var url = URL.createObjectURL(blob);
+
+        var downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = filename;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+	}
+
+	function saveTxt() {
+        var text = document.getElementById('input').value;
+
+        saveFile('callstack.txt', text, 'text;charset=utf-8');
+	}
+
+	function saveSvg() {
+        var output = document.getElementById('output').firstChild;
+        var serializer = new XMLSerializer();
+        var text = '<?xml version="1.0" standalone="no"?>\n' + serializer.serializeToString(output);
+
+        saveFile('sequence.svg', text, 'image/svg+xml;charset=utf-8');
+	}
     </script>
   </head>
   <body>
+    <a href="https://github.com/xiety/SeqDax"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
   	<input type="button" value="Sample" onclick="javascript: sample()"></input>
+  	<span>Dynamics AX callstack to sequence diagram converter</span>
+  	<input type="button" value="Save Txt" onclick="javascript: saveTxt()"></input>
+  	<input type="button" value="Save Svg" onclick="javascript: saveSvg()"></input>
   	<textarea name="input" id="input" cols="65" rows="15" style="width:100%; height:15em" oninput="javascript: convert()"></textarea>
   	<div id="output"></div>
   </body>
