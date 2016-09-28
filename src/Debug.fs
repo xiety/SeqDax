@@ -7,7 +7,7 @@ let RootObjectName = "User"
 
 type CallstackItem = { ObjectName: string; MethodName: string; Line: int; Children: CallstackItem list }
 
-let private reverse (root: AxCallstackItem) (ax: AxCallstackItem list list) =
+let private reverse (root: AxCallstackItem) ax =
     let mapLine a =
         //first root will be eliminated by pairwise
         root::root::(List.rev a)
@@ -34,7 +34,7 @@ let rec private convert curstack curitem level ax =
                    |> nextLayer curstack
                    |> List.map (fun a -> convert a (List.last a) (level + 1) ax)
 
-    { CallstackItem.ObjectName = curitem.ObjectName; MethodName = curitem.MethodName; Line = curitem.Line; Children = children }
+    { ObjectName = curitem.ObjectName; MethodName = curitem.MethodName; Line = curitem.Line; Children = children }
 
 let convertAxCallstack ax =
     let root = { AxCallstackItem.ObjectName = RootObjectName; MethodName = "Do"; Line = 0 }
