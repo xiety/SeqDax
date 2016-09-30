@@ -74,10 +74,10 @@ define(["exports", "fable-core", "./Utils"], function (exports, _fableCore, _Uti
 
   function parse(items) {
     var regex = function regex(s) {
-      var activePatternResult97 = (0, _Utils.$Regex$_$)("^\\[[sc]\\]\\s+(.*?)\\s+(\\d+)$", s);
+      var activePatternResult96 = (0, _Utils.$Regex$_$)("^\\[[sc]\\]\\s+(.*?)\\s+(\\d+)$", s);
 
-      if (activePatternResult97 != null) {
-        var a = activePatternResult97;
+      if (activePatternResult96 != null) {
+        var a = activePatternResult96;
         return createItem(a[1], a[2]);
       }
     };

@@ -68,10 +68,8 @@ define(["exports", "fable-core"], function (exports, _fableCore) {
       }(x), function (tuple) {
         return tuple[0];
       }(y));
-    }, _fableCore.List.map(function (a) {
-      return [a[0], _fableCore.List.reverse(a[1])];
     }, _fableCore.Seq.toList(_fableCore.Seq.groupBy(function (tuple) {
       return tuple[1];
-    }, _fableCore.Seq.toList(markBy(list)(1))))))).tail);
+    }, _fableCore.Seq.toList(markBy(list)(1)))))).tail);
   }
 });

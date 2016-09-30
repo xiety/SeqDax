@@ -66,7 +66,7 @@ define(["exports", "fable-core", "./Axapta"], function (exports, _fableCore, _Ax
         var inputRecord = a_1[1];
         var Line = a_1[0].Line;
         return new _Axapta.AxCallstackItem(inputRecord.ObjectName, inputRecord.MethodName, Line);
-      }, _fableCore.Seq.toList(_fableCore.Seq.skip(1, _fableCore.Seq.toList(_fableCore.Seq.pairwise(_fableCore.List.ofArray([root, root], _fableCore.List.reverse(a)))))));
+      }, _fableCore.Seq.toList(_fableCore.Seq.pairwise(_fableCore.List.ofArray([root, root], _fableCore.List.reverse(a)))));
     };
 
     return _fableCore.List.map(mapLine, ax);

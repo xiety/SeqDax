@@ -12,9 +12,6 @@ let private reverse (root: AxCallstackItem) ax =
         //first root will be eliminated by pairwise
         root::root::(List.rev a)
         |> List.pairwise
-#if FABLE
-        |> List.skip 1 //TODO: remove when pairwise fixed ISSUE#437
-#endif
         |> List.map (fun a -> { (snd a) with Line = (fst a).Line } )
 
     List.map mapLine ax

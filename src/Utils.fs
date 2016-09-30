@@ -34,9 +34,6 @@ let splitBy f list =
     markBy list 1
     |> List.ofSeq
     |> List.groupBy snd
-#if FABLE
-    |> List.map (fun a -> (fst a, snd a |> List.rev)) //TODO: Fable group by error ISSUE#440
-#endif
     |> List.sortBy fst
     |> List.tail
     |> List.map (snd >> List.map fst)
