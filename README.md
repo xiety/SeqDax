@@ -6,7 +6,7 @@ https://xiety.github.io/SeqDax
 
 To create this:
 
-![Sequence diagram](https://xiety.github.io/SeqDax/sample.svg)
+![Sequence diagram](https://xiety.github.io/SeqDax/sample.svg?)
 
 From this:
 
